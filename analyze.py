@@ -8,6 +8,10 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore', category=pd.errors.DtypeWarning)
 
+plt.rc('font', family='NanumGothic') # For Windows
+plt.rcParams['font.family'] = 'Malgun Gothic'
+# %matplotlib inline
+
 BASE = Path(__file__).parent
 
 # ===== 파일 경로 =====
@@ -79,7 +83,6 @@ AREA_COLORS = {
     "자료와 가능성": "#D9C168", # 노란색
 }
 
-
 def area_scores(df, area_numbers, prefix):
     cols = [f"{prefix}{n:02d}" for n in area_numbers if f"{prefix}{n:02d}" in df.columns]
     if not cols:
@@ -103,7 +106,7 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
     fig, ax = plt.subplots(figsize=(8,6)) # Figure와 Axes 객체를 함께 생성
     
     # 바이올린 플롯 그리기
-    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False)
+    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False, points=200)
 
     # 개별 바이올린 색상, 테두리 지정 
     for body, lab in zip(v['bodies'], labels):
@@ -115,8 +118,14 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
 
     # 내부 박스(이상치 숨김)
     # 중앙값(median) 표시를 위해 박스 플롯을 겹쳐 사용
-    ax.boxplot(data, widths=0.1, showfliers=False, medianprops=dict(color="black"))
+    # ax.boxplot(data, widths=0.1, showfliers=False, medianprops=dict(color="black"))
 
+    bp = ax.boxplot(data, widths=0.1, showfliers=False, 
+                    patch_artist=True,  # 이것을 추가해야 facecolor 사용 가능!
+                    medianprops=dict(color="black", linewidth=1.5),
+                    boxprops=dict(facecolor='white', edgecolor='black', linewidth=1),
+                    whiskerprops=dict(color='black', linewidth=1),
+                    capprops=dict(color='black', linewidth=1))
     # Q1, Q2, Q3 수치 표시 (추가됨)
     for i, d in enumerate(data):
         q1, median, q3 = np.percentile(d, [25, 50, 75])
@@ -143,8 +152,8 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
     ax.set_ylabel("정답률")
     ax.set_ylim(0, 1.05)
     
-    # 제목 형식 변경
-    ax.set_title(f"{year}학년도 문해력 영역별 정답률 분포 ({grade}학년)")
+    # 제목 형식 변경 - "수리력"으로 수정
+    ax.set_title(f"{year}학년도 수리력 영역별 정답률 분포 ({grade}학년)")
     
     # 플롯 주변 테두리 제거 
     ax.spines['top'].set_visible(False)
@@ -166,15 +175,15 @@ def main():
     # 2023: 학년 코드 주의(8→2, 10→1)
     jobs_2023 = [(2023, 4, 4), (2023, 6, 6), (2023, 8, 2), (2023, 10, 1)]
     for year, disp_grade, code in jobs_2023:
-        scores = get_scores_df(df23, code, mapping_2023, prefix="sk")
-        out = BASE / f"violin_{year}_{disp_grade}th.png"
+        scores = get_scores_df(df23, code, mapping_2023, prefix="sm")
+        out = BASE / 'figure' / f"violin_{year}_{disp_grade}th.png"
         plot_single_year_grade(scores, year, disp_grade, out)
 
     # 2024: 학년 코드 그대로(8, 10)
     jobs_2024 = [(2024, 4, 4), (2024, 6, 6), (2024, 8, 8), (2024, 10, 10)]
     for year, disp_grade, code in jobs_2024:
-        scores = get_scores_df(df24, code, mapping_2024, prefix="문해력")
-        out = BASE / f"violin_{year}_{disp_grade}th.png"
+        scores = get_scores_df(df24, code, mapping_2024, prefix="수리력")
+        out = BASE / 'figure' / f"violin_{year}_{disp_grade}th.png"
         plot_single_year_grade(scores, year, disp_grade, out)
 
     print("완료! violin_2023_4th/6th/8th/10th.png, violin_2024_4th/6th/8th/10th.png 생성됨.")
