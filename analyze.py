@@ -106,7 +106,7 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
     fig, ax = plt.subplots(figsize=(8,6)) # Figure와 Axes 객체를 함께 생성
     
     # 바이올린 플롯 그리기
-    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False, points=200)
+    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False, points=500)
 
     # 개별 바이올린 색상, 테두리 지정 
     for body, lab in zip(v['bodies'], labels):
