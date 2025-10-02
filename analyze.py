@@ -106,7 +106,7 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
     fig, ax = plt.subplots(figsize=(8,6)) # Figure와 Axes 객체를 함께 생성
     
     # 바이올린 플롯 그리기
-    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False, points=500)
+    v = ax.violinplot(data, showmeans=False, showmedians=True, showextrema=False, points=1500)
 
     # 개별 바이올린 색상, 테두리 지정 
     for body, lab in zip(v['bodies'], labels):
@@ -139,16 +139,16 @@ def plot_single_year_grade(df_scores, year, grade, outpath):
 
         # Q1 (25th percentile) 표시
         ax.text(x + offset_x_text, q1 - offset_y_q1, f"Q1={q1:.2f}",
-                color='blue', va='center', ha='left', fontsize=9)
+                color='blue', va='center', ha='left', fontsize=12)
         # Q2 (Median, 50th percentile) 표시
         ax.text(x + offset_x_text, median - offset_y_q2, f"Q2={median:.2f}",
-                color='red', va='center', ha='left', fontsize=9)
+                color='red', va='center', ha='left', fontsize=12)
         # Q3 (75th percentile) 표시
         ax.text(x + offset_x_text, q3 + offset_y_q3, f"Q3={q3:.2f}",
-                color='green', va='center', ha='left', fontsize=9)
+                color='green', va='center', ha='left', fontsize=12)
 
     # Axes 꾸미기
-    ax.set_xticks(np.arange(1, len(labels)+1), labels, rotation=10)
+    ax.set_xticks(np.arange(1, len(labels)+1), labels)
     ax.set_ylabel("정답률")
     ax.set_ylim(0, 1.05)
     
